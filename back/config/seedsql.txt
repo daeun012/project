@@ -26,99 +26,91 @@ USE `project`;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `dept`
---
-
-CREATE TABLE `depts`(
-  `dept_id` int(11) NOT NULL,
-  `value` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `tags`
---
-
-INSERT INTO `depts` (`dept_id`,`value`) VALUES
-(1, 'pizza'),
-(2, 'animals'),
-(3, 'party'),
-(4, 'travels'),
-(5, 'sport'),
-(6, 'cooking'),
-(7, 'technology'),
-(8, 'art'),
-(9, 'culture'),
-(10, 'books'),
-(11, 'money'),
-(12, 'politics'),
-(13, 'nature'),
-(14, 'clothing'),
-(15, 'fashion'),
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `users`
 --
-
 CREATE TABLE `users`(
-  `usernum` int not null auto_increment,
-  `id` varchar(255) NOT NULL,
+  `id` int not null,
+  `userID` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `studentid` int(10) NOT NULL,
+  `student_id` int(5) NOT NULL,
   `grade` int(5) NOT NULL,
   `dept` varchar(255) NOT NULL,
-  `auth` boolean default false,
-  `count`int(2) DEFAULT '1',
-  `groupnum` int(5) DEFAULT NULL,
-  `password_key` varchar(255) DEFAULT NULL,
-  `user_key` varchar(255) DEFAULT NULL,
-  `online` tinyint(1) NOT NULL DEFAULT '0',
-  `last_connexion` datetime DEFAULT NULL
+  `room_id` varchar(255) default NULL,
+  `count` int(2) DEFAULT '1',
+  `auth` boolean default false
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+--
+-- Table structure for table `matches`
+--
+CREATE TABLE `matches` (
+  `room_id` int not null,
+  `grade1` int(5) default null ,
+  `grade2` int(5) default null,
+  `grade3` int(5) default null,
+  `grade4` int(5) default null,
+  `dept` varchar(255) NOT NULL,
+  `last_message` timestamp NULL DEFAULT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+--
+-- Table structure for table `messages`
+--
+CREATE TABLE `messages` (
+  `id` int not null,
+  `msg` mediumtext CHARACTER SET utf8mb4 NOT NULL,
+  `msgFrom` int(5) NOT NULL,
+  `room_id` int not null,,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 --
 -- Indexes for table `users`
 --
+
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
+
 
 --
 -- AUTO_INCREMENT for table `users`
 --
+
 ALTER TABLE `users`
   MODIFY `id` int(5) NOT NULL AUTO_INCREMENT;
 
 
-create database capstone;
-use capstone;
+--
+-- Indexes for table `matches`
+--
 
-create table userinfo(
-    usernum int not null auto_increment,
-    id varchar(255) NOT NULL,
-    password varchar(255) not null,
-    name varchar(255) not null,
-	email varchar(255) not null,
-	studentid int not null,
-	grade int default null,
-    dept varchar(255) not null,
-    auth tinyint default 0,
-    count int default 1,
-    groupnum int default null,
-    password_key  varchar(255) DEFAULT NULL,
-	user_key varchar(255) DEFAULT NULL,
-    primary key(usernum),
-    foreign key(groupnum) references groupinfo(groupnum)on update cascade on delete set null)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ALTER TABLE `matches`
+  ADD PRIMARY KEY (`room_id`);
 
-create table groupinfo(
-    groupnum int not null auto_increment,
-    activation tinyint default 0,
-    grade1 int default null,
-    grade2 int default null,
-    grade3 int default null,
-    grade4 int default null,
-    dept varchar(255) not null,
-    primary key(groupnum))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- AUTO_INCREMENT for table `matches`
+--
+
+ALTER TABLE `matches`
+  MODIFY `room_id` int(5) NOT NULL AUTO_INCREMENT;
+
+--
+-- Indexes for table `messages`
+--
+
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for table `messages`
+--
+
+ALTER TABLE `messages`
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT;
