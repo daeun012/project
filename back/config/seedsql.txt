@@ -1,0 +1,124 @@
+-- phpMyAdmin SQL Dump
+-- version 4.8.5
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost:3306
+-- Generation Time: Sep 11, 2019 at 02:12 AM
+-- Server version: 5.6.43
+-- PHP Version: 5.6.40
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `project`
+--
+CREATE DATABASE IF NOT EXISTS `project` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `project`;
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dept`
+--
+
+CREATE TABLE `depts`(
+  `dept_id` int(11) NOT NULL,
+  `value` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tags`
+--
+
+INSERT INTO `depts` (`dept_id`,`value`) VALUES
+(1, 'pizza'),
+(2, 'animals'),
+(3, 'party'),
+(4, 'travels'),
+(5, 'sport'),
+(6, 'cooking'),
+(7, 'technology'),
+(8, 'art'),
+(9, 'culture'),
+(10, 'books'),
+(11, 'money'),
+(12, 'politics'),
+(13, 'nature'),
+(14, 'clothing'),
+(15, 'fashion'),
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users`(
+  `usernum` int not null auto_increment,
+  `id` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `studentid` int(10) NOT NULL,
+  `grade` int(5) NOT NULL,
+  `dept` varchar(255) NOT NULL,
+  `auth` boolean default false,
+  `count`int(2) DEFAULT '1',
+  `groupnum` int(5) DEFAULT NULL,
+  `password_key` varchar(255) DEFAULT NULL,
+  `user_key` varchar(255) DEFAULT NULL,
+  `online` tinyint(1) NOT NULL DEFAULT '0',
+  `last_connexion` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT;
+
+
+create database capstone;
+use capstone;
+
+create table userinfo(
+    usernum int not null auto_increment,
+    id varchar(255) NOT NULL,
+    password varchar(255) not null,
+    name varchar(255) not null,
+	email varchar(255) not null,
+	studentid int not null,
+	grade int default null,
+    dept varchar(255) not null,
+    auth tinyint default 0,
+    count int default 1,
+    groupnum int default null,
+    password_key  varchar(255) DEFAULT NULL,
+	user_key varchar(255) DEFAULT NULL,
+    primary key(usernum),
+    foreign key(groupnum) references groupinfo(groupnum)on update cascade on delete set null)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+create table groupinfo(
+    groupnum int not null auto_increment,
+    activation tinyint default 0,
+    grade1 int default null,
+    grade2 int default null,
+    grade3 int default null,
+    grade4 int default null,
+    dept varchar(255) not null,
+    primary key(groupnum))ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+

@@ -1,0 +1,28 @@
+{
+   "name": "back",
+   "version": "1.0.0",
+   "description": "Creating a matching site using React, Node JS and Mysql",
+   "main": "./routes/server.js",
+   "scripts": {
+      "start": "node ./routes/server.js",
+      "server": "nodemon ./routes/server.js",
+      "front": "cd ../front && npm start",
+      "dev": "concurrently --kill-others \"npm run server\" \"npm run front\""
+   },
+   "author": "",
+   "license": "ISC",
+   "dependencies": {
+      "body-parser": "^1.19.0",
+      "concurrently": "^5.3.0",
+      "express": "^4.17.1",
+      "express-router": "0.0.1",
+      "jsonwebtoken": "^8.5.1",
+      "moment": "^2.29.1",
+      "mysql": "^2.18.1",
+      "nodemon": "^2.0.4",
+      "password-hash": "^1.2.2",
+      "querystring": "^0.2.0",
+      "request": "^2.88.2",
+      "socket.io": "^2.3.0"
+   }
+}
