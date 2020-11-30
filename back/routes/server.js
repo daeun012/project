@@ -15,8 +15,6 @@ app.use(bodyParser.json({ limit: '10mb', extended: true })); // body 크기 설�
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true })); // url 크기 설정
 app.use('/users/', userRoute.router);
 
-// custom module(class?)
-var client = require('./client');
 const matchModel = require('../models/matchModel');
 const chatModel = require('../models/chatModel');
 const matchController = require('../controllers/matchController');

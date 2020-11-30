@@ -79,15 +79,4 @@ module.exports = {
       });
     }
   },
-
-  updateUserData: async (req, res, next) => {
-    var result = await userModel.updateData(req.params.id, req.body.data);
-
-    if (result.error) return res.status(401).json({ error: result.error });
-    else {
-      return res.status(200).json({
-        message: `User data updated`,
-      });
-    }
-  },
 };

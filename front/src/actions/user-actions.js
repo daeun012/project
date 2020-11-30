@@ -32,10 +32,11 @@ export const getUserData = (userID) => {
   };
 };
 
-export const updateUserData = (id, userID, data) => {
+export const updateUserField = (id, userID, field, data) => {
   return (dispatch) => {
+    dispatch({ type: 'UPDATE_USER' });
     ApiCall.user
-      .updateUserData(id, data)
+      .updateUserField(id, field, data)
       .then((response) => {
         dispatch({ type: 'USER_UPDATED', payload: data });
         axios
@@ -52,30 +53,9 @@ export const updateUserData = (id, userID, data) => {
           });
       })
       .catch((error) => {
-        console.log(error);
         ErrorToast.custom.error(error.response['data']['error'], 1400);
         dispatch({ type: 'ERROR', payload: error });
       });
-    dispatch({ type: 'AFTER_ASYNC' });
-  };
-};
-
-export const updateUserField = (userID, data) => {
-  return (dispatch) => {
-    dispatch({ type: 'USER_UPDATED', payload: data });
-    axios
-      .get(`${apiUrl}/profile/${userID}`)
-      .then((response) => {
-        InfoToast.custom.info('Updated', 1400);
-        dispatch({ type: 'USER_RECEIVED', payload: response.data });
-      })
-      .catch((error) => {
-        dispatch({
-          type: 'ERROR',
-          payload: error,
-        });
-      });
-
     dispatch({ type: 'AFTER_ASYNC' });
   };
 };
