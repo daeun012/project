@@ -38,7 +38,6 @@ CREATE TABLE `users`(
   `grade` int(5) NOT NULL,
   `dept` varchar(255) NOT NULL,
   `room_id` varchar(255) default NULL,
-  `count` int(2) DEFAULT '1',
   `auth` boolean default false
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
