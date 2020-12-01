@@ -4,8 +4,8 @@ module.exports = {
     console.log(data);
     try {
       var result = await pool.query({
-        sql: 'INSERT INTO messages (msg, msgFrom, room_id) VALUES (?,?,?)',
-        values: [data.msg, data.msgFrom, data.room_id],
+        sql: 'INSERT INTO messages (msg, msgFrom_id, msgFrom_name, room_id) VALUES (?,?,?,?)',
+        values: [data.msg, data.msgFrom_id, data.msgFrom_name, data.room_id],
       });
       return result.affectedRows;
     } catch (err) {

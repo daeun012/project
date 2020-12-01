@@ -1,14 +1,16 @@
 var pool = require('../config/database');
 
 module.exports = {
-  getMatch: async (id) => {
+  getMatch: async (room_id) => {
     try {
       var result = await pool.query({
-        sql: 'SELECT * FROM matches WHERE grade1 = ? or grade2 = ? or grade3 = ? or grade4 = ?',
-        values: [id, id, id, id],
+        sql: 'SELECT * FROM matches WHERE room_id= ?',
+        values: [room_id],
       });
-      console.log(result[0].room_id);
-      if (result) return result[0];
+      if (result.length) return result[0];
+      else {
+        return false;
+      }
     } catch (err) {
       throw new Error(err);
     }

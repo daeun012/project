@@ -19,7 +19,7 @@ const matchModel = require('../models/matchModel');
 const chatModel = require('../models/chatModel');
 const matchController = require('../controllers/matchController');
 const chatController = require('../controllers/chatController');
-
+const client = require('./client.js');
 // custom variable
 var client_list = {};
 var room_list = {};
@@ -39,26 +39,48 @@ io.on('connection', (socket) => {
     }
 
     var room_id = await matchModel.getRoomIdFromId(msg.id);
-    console.log(room_id);
     if (room_id) {
       socket.join(room_id);
-      socket.emit('setRoomId', room_id);
-      console.log('join_id2', Object.keys(socket.adapter.rooms)[0]);
-      socket.emit('updateMember', room_list[room_id]);
+      if (room_list[room_id]) {
+        // 맴버 업데이트
+        socket.emit('updateMember', room_list[room_id]);
 
-      var data = await chatModel.getMessages(room_id);
+        // 그 전 메세지 가져오기
+        var data = await chatModel.getMessages(room_id);
 
-      let tab = [];
-      for (var i = 0; i < data.length; i++) {
-        tab.push({
-          id: i,
-          msg: data[i]['msg'],
-          msgFrom: data[i]['msgFrom'],
-          date: moment(data[i]['date']).format('h:mm'),
-        });
+        let tab = [];
+        for (var i = 1; i < data.length; i++) {
+          tab.push({
+            id: i + 1,
+            msg: data[i]['msg'],
+            msgFrom_id: data[i]['msgFrom_id'],
+            msgFrom_name: data[i]['msgFrom_name'],
+            date: moment(data[i]['date']).format('h:mm'),
+          });
+        }
+        socket.emit('updateMessage', tab);
+      } else {
+        // 맴버 업데이트
+        var members = await matchController.getMembers(room_id);
+        room_list[room_id] = members;
+        socket.emit('updateMember', room_list[room_id]);
+
+        // 그 전 메세지 가져오기
+        var data = await chatModel.getMessages(room_id);
+        let tab = [];
+        for (var i = 0; i < data.length; i++) {
+          tab.push({
+            id: i + 1,
+            msg: data[i]['msg'],
+            msgFrom_id: data[i]['msgFrom_id'],
+            msgFrom_name: data[i]['msgFrom_name'],
+            date: moment(data[i]['date']).format('h:mm'),
+          });
+        }
+        console.log(tab);
+
+        socket.emit('updateMessage', tab);
       }
-      console.log(tab);
-      socket.emit('updateMessage', tab);
     }
   });
 
@@ -73,7 +95,7 @@ io.on('connection', (socket) => {
       room_list[room_id][msg.grade - 1] = { grade: msg.grade, user_id: msg.id, name: msg.name };
     } else {
       room_list[room_id] = [{ grade: 1 }, { grade: 2 }, { grade: 3 }, { grade: 4 }];
-      room_list[room_id][msg.grade - 1] = { grade: msg.grade, user_id: msg.id, name: msg.name };
+      room_list[room_id][msg.grade - 1] = { grade: msg.grade, id: msg.id, name: msg.name };
     }
 
     console.log(room_list[room_id]);
@@ -85,16 +107,16 @@ io.on('connection', (socket) => {
 
     socket.emit('newMessage', { msg: '매칭이 완료 되었습니다!', msgFrom: 999, date: Date.now() });
 
-    chatController.saveMessage({ room_id: room_id, msg: `${msg.name}님이 입장하셨습니다.`, msgFrom: 999 });
-    socket.broadcast.to(room_id).emit('newMessage', { msg: `${msg.name}님이 입장하셨습니다.`, msgFrom: 999, date: Date.now() });
+    chatController.saveMessage({ room_id: room_id, msg: `'${msg.name}' 님이 입장하셨습니다.`, msgFrom_id: 999, msgFrom_name: '관리자' });
+    socket.broadcast.to(room_id).emit('newMessage', { msg: `'${msg.name}' 님이 입장하셨습니다.`, msgFrom_id: 999, msgFrom_name: '관리자', date: Date.now() });
   });
 
   socket.on('saveMessage', (data, callback) => {
     chatController.saveMessage(data);
 
-    io.to(data.room_id).emit('newMessage', { msg: data.msg, msgFrom: data.msgFrom, date: Date.now() });
+    io.to(data.room_id).emit('newMessage', { msg: data.msg, msgFrom_id: data.msgFrom_id, msgFrom_name: data.msgFrom_name, date: Date.now() });
     callback({
-      data: { msg: data.msg, msgFrom: data.msgFrom, date: Date.now() },
+      data: { msg: data.msg, msgFrom_id: data.msgFrom_id, msgFrom_name: data.msgFrom_name, date: Date.now() },
     });
     callback();
   });

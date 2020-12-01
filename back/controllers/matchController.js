@@ -1,5 +1,5 @@
 var matchModel = require('../models/matchModel');
-const chatModel = require('../models/chatModel');
+const userModel = require('../models/userModel');
 
 module.exports = {
   matchingRandom: async (id, grade, dept) => {
@@ -59,9 +59,22 @@ module.exports = {
     }
   },
 
-  getUserList: async (id) => {
-    var result = matchModel.getMatch(id);
-    var matchIdList = [result.grade1, result.grade2, result.grade3, result.grade4];
-    var matchUserList = userModel.getUserListFromIdList;
+  getMembers: async (room_id) => {
+    var match = await matchModel.getMatch(room_id);
+
+    var result = await userModel.getMemberInfo(match['grade1'], match['grade2'], match['grade3'], match['grade4']);
+    console.log(result);
+
+    let members = [{ grade: 1 }, { grade: 2 }, { grade: 3 }, { grade: 4 }];
+
+    for (var i = 0; i < members.length; i++) {
+      for (var j = 0; j < result.length; j++) {
+        if (result[j].grade === i + 1) {
+          members[i] = result[j];
+        }
+      }
+    }
+
+    return members;
   },
 };

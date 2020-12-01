@@ -44,4 +44,16 @@ module.exports = {
       throw new Error(err);
     }
   },
+
+  getMemberInfo: async (grade1, grade2, grade3, grade4) => {
+    try {
+      var result = await pool.query({
+        sql: 'SELECT grade,id,name FROM users WHERE id IN(?,?,?,?)',
+        values: [grade1, grade2, grade3, grade4],
+      });
+      if (result) return result;
+    } catch (err) {
+      throw new Error(err);
+    }
+  },
 };

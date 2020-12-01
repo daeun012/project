@@ -25,11 +25,9 @@ class HomeLogged extends Component {
   }
 
   render() {
-    console.log('render');
-    console.log(this.state.messages);
     return (
       <div className="App">
-        {this.state.id !== undefined && this.state.room_id === '' ? (
+        {this.state.id !== undefined && this.props.userData.room_id === null ? (
           <div className="row">
             <div className="matching-btn" onClick={this.handleMatch}>
               매칭하기
@@ -41,7 +39,7 @@ class HomeLogged extends Component {
               <Members members={this.state.member} />
             </div>
             <div className="col s9">
-              <Messages messages={this.state.messages} />
+              <Messages messages={this.state.messages} member={this.state.member} />
               <form className="fixed-bottom-imput" onSubmit={this.handleSubmit}>
                 <div className="col s9 chat-message-box">
                   <label htmlFor="msgToSend">Write your message</label>
@@ -65,12 +63,6 @@ class HomeLogged extends Component {
     this._isMounted = true;
     this._isMounted && socket.emit('STA', { id: this.state.id, userID: this.state.userID });
 
-    socket.on('setRoomId', (room_id) => {
-      this.setState({
-        room_id: room_id,
-      });
-    });
-
     socket.on('updateMember', (member) => {
       console.log(member);
       this.setState({
@@ -79,18 +71,17 @@ class HomeLogged extends Component {
     });
 
     socket.on('newMessage', (message) => {
-      console.log('neMessages');
       var formattedTime = moment(message.date).format('h:mm');
 
       let newMsg = {
         id: this.state.messages.length + 1,
         msg: message.msg,
-        msgFrom: message.msgFrom,
+        msgFrom_id: message.msgFrom_id,
+        msgFrom_name: message.msgFrom_name,
         date: formattedTime,
       };
-      console.log(newMsg);
+
       let tab = this.state.messages;
-      console.log(tab);
       tab.push(newMsg);
       this.setState({
         messages: tab,
@@ -100,32 +91,40 @@ class HomeLogged extends Component {
     });
 
     socket.on('updateMessage', (tab) => {
-      console.log(tab);
       this.setState({
         messages: tab,
       });
+
+      this.goToElement(tab.length);
     });
   }
 
   componentWillUnmount() {
     this._isMounted = false;
-    socket.close();
+    /*  socket.close(); */
   }
 
-  /*   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log(nextProps.userConnectedData.room_id, prevState.room_id);
-    if (nextProps.userConnectedData.room_id !== prevState.room_id) {
-      return { room_id: nextProps.userConnectedData.room_id };
+  static getDerivedStateFromProps(nextProps, prevState) {
+    console.log(nextProps.userData.room_id, prevState.room_id);
+    if (nextProps.userData.room_id !== prevState.room_id) {
+      return { room_id: nextProps.userData.room_id };
     }
   }
- */
+
   componentDidUpdate(prevProps, prevState) {
     console.log('componentdidupdate');
     this._isMounted = true;
   }
 
   handleMatch = () => {
-    socket.emit('RMStart', { id: this.state.id, grade: this.props.userConnectedData.grade, dept: this.props.userConnectedData.dept, name: this.props.userConnectedData.name });
+    /*   socket.emit('RMStart', { id: this.state.id, grade: this.props.userData.grade, dept: this.props.userData.dept, name: this.props.userData.name }); */
+
+    this.props.updateUserField(this.props.userData.id, this.props.userData.userID, 'room_id', 2);
+  };
+
+  goToElement = (nb) => {
+    console.log(nb);
+    document.getElementById('id-msg' + nb).scrollIntoView({ block: 'start' });
   };
 
   handleChange = (e) => {
@@ -135,19 +134,15 @@ class HomeLogged extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     if (this.state.newMsg !== '') {
-      socket.emit('saveMessage', { room_id: this.state.room_id, msg: this.state.newMsg, msgFrom: this.state.id }, function (data) {});
+      socket.emit('saveMessage', { room_id: this.props.userData.room_id, msg: this.state.newMsg, msgFrom_id: this.state.id, msgFrom_name: this.props.userData.name }, function (data) {});
     }
     this._isMounted && this.setState({ newMsg: '' });
   };
-
-  goToElement = (nb) => {
-    //console.log(nb);
-    document.getElementById('id-msg' + nb).scrollIntoView({ block: 'start' });
-  };
 }
+
 const mapStateToProps = (state) => {
   return {
-    userConnectedData: state.user.data,
+    userData: state.user.data,
     userConnectedStatus: state.user.status,
   };
 };

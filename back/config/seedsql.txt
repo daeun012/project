@@ -63,7 +63,8 @@ CREATE TABLE `matches` (
 CREATE TABLE `messages` (
   `id` int not null,
   `msg` mediumtext CHARACTER SET utf8mb4 NOT NULL,
-  `msgFrom` int(5) NOT NULL,
+  `msgFrom_id` int(5) NOT NULL,
+  `msgFrom_name` varchar(255) NOT NULL,
   `room_id` int not null,,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
