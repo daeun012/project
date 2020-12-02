@@ -41,15 +41,16 @@ io.on('connection', (socket) => {
     var room_id = await matchModel.getRoomIdFromId(msg.id);
     if (room_id) {
       socket.join(room_id);
+      console.log(room_list[room_id]);
       if (room_list[room_id]) {
         // 맴버 업데이트
         socket.emit('updateMember', room_list[room_id]);
 
         // 그 전 메세지 가져오기
-        var data = await chatModel.getMessages(room_id);
-
+        var data = await chatModel.getMessages(msg.id, room_id);
+        console.log(data);
         let tab = [];
-        for (var i = 1; i < data.length; i++) {
+        for (var i = 0; i < data.length; i++) {
           tab.push({
             id: i + 1,
             msg: data[i]['msg'],
@@ -58,7 +59,8 @@ io.on('connection', (socket) => {
             date: moment(data[i]['date']).format('h:mm'),
           });
         }
-        socket.emit('updateMessage', tab);
+        console.log(tab);
+        socket.emit('updateChat', tab);
       } else {
         // 맴버 업데이트
         var members = await matchController.getMembers(room_id);
@@ -66,7 +68,7 @@ io.on('connection', (socket) => {
         socket.emit('updateMember', room_list[room_id]);
 
         // 그 전 메세지 가져오기
-        var data = await chatModel.getMessages(room_id);
+        var data = await chatModel.getMessages(msg.id, room_id);
         let tab = [];
         for (var i = 0; i < data.length; i++) {
           tab.push({
@@ -79,7 +81,7 @@ io.on('connection', (socket) => {
         }
         console.log(tab);
 
-        socket.emit('updateMessage', tab);
+        socket.emit('updateChat', tab);
       }
     }
   });
@@ -92,7 +94,7 @@ io.on('connection', (socket) => {
     console.log('room_id', room_id);
 
     if (room_list[room_id]) {
-      room_list[room_id][msg.grade - 1] = { grade: msg.grade, user_id: msg.id, name: msg.name };
+      room_list[room_id][msg.grade - 1] = { grade: msg.grade, id: msg.id, name: msg.name };
     } else {
       room_list[room_id] = [{ grade: 1 }, { grade: 2 }, { grade: 3 }, { grade: 4 }];
       room_list[room_id][msg.grade - 1] = { grade: msg.grade, id: msg.id, name: msg.name };
@@ -105,9 +107,9 @@ io.on('connection', (socket) => {
 
     io.to(room_id).emit('updateMember', room_list[room_id]);
 
-    socket.emit('newMessage', { msg: '매칭이 완료 되었습니다!', msgFrom: 999, date: Date.now() });
+    socket.emit('newMessage', { msg: '매칭이 완료 되었습니다!', msgFrom_id: 999, msgFrom_name: '관리자', date: Date.now() });
 
-    chatController.saveMessage({ room_id: room_id, msg: `'${msg.name}' 님이 입장하셨습니다.`, msgFrom_id: 999, msgFrom_name: '관리자' });
+    chatController.saveMessage({ room_id: room_id, msg: `'${msg.name}' 님이 입장하셨습니다.`, msgFrom_id: 999, msgFrom_name: `관리자_${msg.id}` });
     socket.broadcast.to(room_id).emit('newMessage', { msg: `'${msg.name}' 님이 입장하셨습니다.`, msgFrom_id: 999, msgFrom_name: '관리자', date: Date.now() });
   });
 

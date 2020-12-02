@@ -8,6 +8,7 @@ class Messages extends Component {
     super(props);
     this.Auth = new AuthService();
     this.state = {
+      winSize: '',
       id: this.Auth.getConfirm()['id'],
     };
   }
@@ -15,6 +16,7 @@ class Messages extends Component {
   render() {
     return (
       <div className="row main-chat-box">
+        <h5 id="chat-title">전자정보통신공학과</h5>
         <div id="chatbox-message" className="col s12 chatbox-message" style={{ height: this.state.winSize }}>
           <br />
 
@@ -25,15 +27,28 @@ class Messages extends Component {
     );
   }
 
+  componentDidMount() {
+    this._isMounted = true;
+    this._isMounted && this.setState({ winSize: window.innerHeight - 200 });
+  }
+
+  handleResizeWindow = () => {
+    this.setState({ winSize: window.innerHeight - 200 });
+  };
+
   msgList = (props) => {
     // console.log(this.state.userID);
     const value = props.value;
+    console.log(value);
     const listItems = value.map((e) =>
       // eslint-disable-next-line
 
       e.msgFrom_id === 999 ? (
-        <div id={'id-msg' + e.id}>
-          <span className="valign-wrapper center-align">{e.msg}</span> <br />
+        <div key={e.id}>
+          <span id={'id-msg' + e.id} className="valign-wrapper center-align">
+            {e.msg}
+          </span>{' '}
+          <br />
         </div>
       ) : (
         <div

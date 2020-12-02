@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 import '../styles/App.css';
 import 'materialize-css/dist/css/materialize.min.css';
 import Avatar from '@material-ui/core/Avatar';
+import AuthService from '../services/AuthService';
 
 class Members extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.Auth = new AuthService();
+    this.state = {
+      id: this.Auth.getConfirm()['id'],
+    };
   }
 
   render() {
@@ -21,17 +25,13 @@ class Members extends Component {
         <ul style={{ height: this.state.winSize, overflow: 'auto' }}>
           {this.props.members
             ? this.props.members.map((e) => (
-                <li className="collection-item avatar clickable">
-                  <Avatar className="chat-user-letters">{e.grade}</Avatar>
+                <li className="collection-item avatar clickable" key={e.grade}>
+                  <Avatar className="chat-user-letters">{this.state.id === e.id ? '나' : e.grade}</Avatar>
                   <span className="title truncate chat-user-title">{e.grade}학년</span>
                   <span className="title truncate chat-user-title">{e.name}</span>
-                  <p className="chat-user-status">Online</p>
-                  <a href="#!" className="secondary-content">
-                    <span id={e.status === 'Online' ? 'green-circle' : 'grey-circle'} aria-label="Active Now" />
-                  </a>
                 </li>
               ))
-            : 'nomember'}
+            : 'member n exist'}
         </ul>
       </ul>
     );

@@ -63,7 +63,6 @@ module.exports = {
     var match = await matchModel.getMatch(room_id);
 
     var result = await userModel.getMemberInfo(match['grade1'], match['grade2'], match['grade3'], match['grade4']);
-    console.log(result);
 
     let members = [{ grade: 1 }, { grade: 2 }, { grade: 3 }, { grade: 4 }];
 

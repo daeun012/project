@@ -13,11 +13,11 @@ module.exports = {
     }
   },
 
-  getMessages: async (room_id) => {
+  getMessages: async (user_id, room_id) => {
     try {
       var result = await pool.query({
-        sql: 'SELECT * FROM messages WHERE room_id = ?',
-        values: room_id,
+        sql: 'SELECT * FROM messages WHERE room_id = ? and date > (SELECT date FROM messages WHERE msgFrom_name = ?) ORDER BY date',
+        values: [room_id, '관리자_' + user_id],
       });
       //console.log(result);
       if (result) return result;

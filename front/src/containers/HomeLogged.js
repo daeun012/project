@@ -6,9 +6,7 @@ import Members from '../components/Members';
 import Messages from '../components/Messages';
 import moment from 'moment';
 import * as actionCreators from '../actions/user-actions';
-
-const socket = io.connect('http://localhost:5000');
-
+var socket;
 class HomeLogged extends Component {
   constructor(props) {
     super(props);
@@ -16,7 +14,6 @@ class HomeLogged extends Component {
     this.state = {
       id: this.Auth.getConfirm()['id'],
       userID: this.Auth.getConfirm()['userID'],
-      room_id: '',
       newMsg: '',
       member: [],
       messages: [],
@@ -25,6 +22,7 @@ class HomeLogged extends Component {
   }
 
   render() {
+    console.log(this._isMounted);
     return (
       <div className="App">
         {this.state.id !== undefined && this.props.userData.room_id === null ? (
@@ -39,7 +37,7 @@ class HomeLogged extends Component {
               <Members members={this.state.member} />
             </div>
             <div className="col s9">
-              <Messages messages={this.state.messages} member={this.state.member} />
+              <Messages messages={this.state.messages} />
               <form className="fixed-bottom-imput" onSubmit={this.handleSubmit}>
                 <div className="col s9 chat-message-box">
                   <label htmlFor="msgToSend">Write your message</label>
@@ -59,8 +57,9 @@ class HomeLogged extends Component {
   }
 
   componentDidMount() {
-    console.log('componentdidmount');
+    socket = io('http://localhost:5000');
     this._isMounted = true;
+    console.log(this._isMounted);
     this._isMounted && socket.emit('STA', { id: this.state.id, userID: this.state.userID });
 
     socket.on('updateMember', (member) => {
@@ -70,9 +69,17 @@ class HomeLogged extends Component {
       });
     });
 
+    socket.on('updateChat', (tab) => {
+      console.log('updateChat');
+      this.setState({
+        messages: tab,
+      });
+
+      this.goToElement(tab.length);
+    });
+
     socket.on('newMessage', (message) => {
       var formattedTime = moment(message.date).format('h:mm');
-
       let newMsg = {
         id: this.state.messages.length + 1,
         msg: message.msg,
@@ -80,51 +87,40 @@ class HomeLogged extends Component {
         msgFrom_name: message.msgFrom_name,
         date: formattedTime,
       };
-
+      console.log(newMsg);
       let tab = this.state.messages;
       tab.push(newMsg);
       this.setState({
         messages: tab,
       });
-
-      this.goToElement(tab.length);
-    });
-
-    socket.on('updateMessage', (tab) => {
-      this.setState({
-        messages: tab,
-      });
-
+      console.log(tab.length);
       this.goToElement(tab.length);
     });
   }
 
   componentWillUnmount() {
     this._isMounted = false;
-    /*  socket.close(); */
+    socket.close();
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    console.log(nextProps.userData.room_id, prevState.room_id);
-    if (nextProps.userData.room_id !== prevState.room_id) {
-      return { room_id: nextProps.userData.room_id };
-    }
-  }
-
+  /* 
   componentDidUpdate(prevProps, prevState) {
     console.log('componentdidupdate');
     this._isMounted = true;
   }
+ */
 
   handleMatch = () => {
-    /*   socket.emit('RMStart', { id: this.state.id, grade: this.props.userData.grade, dept: this.props.userData.dept, name: this.props.userData.name }); */
+    socket.emit('RMStart', { id: this.state.id, grade: this.props.userData.grade, dept: this.props.userData.dept, name: this.props.userData.name });
 
-    this.props.updateUserField(this.props.userData.id, this.props.userData.userID, 'room_id', 2);
+    socket.on('setRoomId', (room_id) => {
+      this.props.updateUserField(this.props.userData.id, this.props.userData.userID, 'room_id', room_id);
+    });
   };
 
   goToElement = (nb) => {
     console.log(nb);
-    document.getElementById('id-msg' + nb).scrollIntoView({ block: 'start' });
+    console.log(document.getElementById('id-msg' + nb)) /* .scrollIntoView({ block: 'start' }) */;
   };
 
   handleChange = (e) => {
