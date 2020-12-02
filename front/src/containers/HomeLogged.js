@@ -74,7 +74,7 @@ class HomeLogged extends Component {
       this.setState({
         messages: tab,
       });
-
+      if (tab.length <= 1) return;
       this.goToElement(tab.length);
     });
 
@@ -94,6 +94,7 @@ class HomeLogged extends Component {
         messages: tab,
       });
       console.log(tab.length);
+      if (tab.length <= 1) return;
       this.goToElement(tab.length);
     });
   }
@@ -120,7 +121,7 @@ class HomeLogged extends Component {
 
   goToElement = (nb) => {
     console.log(nb);
-    console.log(document.getElementById('id-msg' + nb)) /* .scrollIntoView({ block: 'start' }) */;
+    document.getElementById('id-msg' + nb).scrollIntoView({ block: 'start' });
   };
 
   handleChange = (e) => {

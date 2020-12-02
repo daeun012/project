@@ -44,6 +44,7 @@ io.on('connection', (socket) => {
       console.log(room_list[room_id]);
       if (room_list[room_id]) {
         // 맴버 업데이트
+        console.log(room_list[room_id]);
         socket.emit('updateMember', room_list[room_id]);
 
         // 그 전 메세지 가져오기
@@ -62,11 +63,11 @@ io.on('connection', (socket) => {
         console.log(tab);
         socket.emit('updateChat', tab);
       } else {
+        socket.join(room_id);
         // 맴버 업데이트
         var members = await matchController.getMembers(room_id);
         room_list[room_id] = members;
         socket.emit('updateMember', room_list[room_id]);
-
         // 그 전 메세지 가져오기
         var data = await chatModel.getMessages(msg.id, room_id);
         let tab = [];
