@@ -147,8 +147,9 @@ class Register extends Component {
                         학과
                       </option>
                       <option value="1">전자정보통신공학과</option>
-                      <option value="2">한의학과</option>
+                      <option value="2">정보보안학과</option>
                       <option value="3">컴퓨터공학과</option>
+                      <option value="4">환경공학과</option>
                     </select>
                   </div>
                   <div id="error-back" />

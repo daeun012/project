@@ -27,9 +27,8 @@ var room_list = {};
 // socket connection state;
 io.on('connection', (socket) => {
   // 처음 시작
-  socket.on('STA', async (msg) => {
+  socket.on('start', async (msg) => {
     // client_list 에 추가
-    // SWI 명령 전송
     if (client_list[msg.id] == null) {
       client_list[msg.id] = new client(socket.id, msg.id, msg.userID);
       console.log(client_list);
@@ -41,15 +40,13 @@ io.on('connection', (socket) => {
     var room_id = await matchModel.getRoomIdFromId(msg.id);
     if (room_id) {
       socket.join(room_id);
-      console.log(room_list[room_id]);
       if (room_list[room_id]) {
         // 맴버 업데이트
-        console.log(room_list[room_id]);
         socket.emit('updateMember', room_list[room_id]);
 
         // 그 전 메세지 가져오기
         var data = await chatModel.getMessages(msg.id, room_id);
-        console.log(data);
+
         let tab = [];
         for (var i = 0; i < data.length; i++) {
           tab.push({
@@ -60,16 +57,17 @@ io.on('connection', (socket) => {
             date: moment(data[i]['date']).format('h:mm'),
           });
         }
-        console.log(tab);
+
         socket.emit('updateChat', tab);
       } else {
-        socket.join(room_id);
         // 맴버 업데이트
         var members = await matchController.getMembers(room_id);
         room_list[room_id] = members;
         socket.emit('updateMember', room_list[room_id]);
+
         // 그 전 메세지 가져오기
         var data = await chatModel.getMessages(msg.id, room_id);
+
         let tab = [];
         for (var i = 0; i < data.length; i++) {
           tab.push({
@@ -80,8 +78,6 @@ io.on('connection', (socket) => {
             date: moment(data[i]['date']).format('h:mm'),
           });
         }
-        console.log(tab);
-
         socket.emit('updateChat', tab);
       }
     }

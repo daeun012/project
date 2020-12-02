@@ -16,7 +16,7 @@ class Messages extends Component {
   render() {
     return (
       <div className="row main-chat-box">
-        <h5 id="chat-title">전자정보통신공학과</h5>
+        <h5 id="chat-title">{this.dept(this.props.dept)}</h5>
         <div id="chatbox-message" className="col s12 chatbox-message" style={{ height: this.state.winSize }}>
           <br />
 
@@ -34,6 +34,19 @@ class Messages extends Component {
 
   handleResizeWindow = () => {
     this.setState({ winSize: window.innerHeight - 200 });
+  };
+
+  dept = (props) => {
+    switch (props) {
+      case 1:
+        return '전자정보통신공학과';
+      case 2:
+        return '정보보안학과';
+      case 3:
+        return '컴퓨터공학과';
+      case 4:
+        return '환경공학과';
+    }
   };
 
   msgList = (props) => {

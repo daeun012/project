@@ -37,7 +37,7 @@ class HomeLogged extends Component {
               <Members members={this.state.member} />
             </div>
             <div className="col s9">
-              <Messages messages={this.state.messages} />
+              <Messages messages={this.state.messages} dept={this.props.userData.dept} />
               <form className="fixed-bottom-imput" onSubmit={this.handleSubmit}>
                 <div className="col s9 chat-message-box">
                   <label htmlFor="msgToSend">Write your message</label>
@@ -60,7 +60,7 @@ class HomeLogged extends Component {
     socket = io('http://localhost:5000');
     this._isMounted = true;
     console.log(this._isMounted);
-    this._isMounted && socket.emit('STA', { id: this.state.id, userID: this.state.userID });
+    this._isMounted && socket.emit('start', { id: this.state.id, userID: this.state.userID });
 
     socket.on('updateMember', (member) => {
       console.log(member);
@@ -103,13 +103,6 @@ class HomeLogged extends Component {
     this._isMounted = false;
     socket.close();
   }
-
-  /* 
-  componentDidUpdate(prevProps, prevState) {
-    console.log('componentdidupdate');
-    this._isMounted = true;
-  }
- */
 
   handleMatch = () => {
     socket.emit('RMStart', { id: this.state.id, grade: this.props.userData.grade, dept: this.props.userData.dept, name: this.props.userData.name });
