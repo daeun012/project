@@ -36,7 +36,7 @@ CREATE TABLE `users`(
   `email` varchar(255) NOT NULL,
   `student_id` int(5) NOT NULL,
   `grade` int(5) NOT NULL,
-  `dept` varchar(255) NOT NULL,
+  `dept` int(5) NOT NULL,
   `room_id` varchar(255) default NULL,
   `auth` boolean default false
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
