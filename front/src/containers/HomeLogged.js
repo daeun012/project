@@ -59,7 +59,6 @@ class HomeLogged extends Component {
   componentDidMount() {
     socket = io('http://localhost:5000');
     this._isMounted = true;
-    console.log(this._isMounted);
     this._isMounted && socket.emit('start', { id: this.state.id, userID: this.state.userID });
 
     socket.on('updateMember', (member) => {
@@ -70,7 +69,6 @@ class HomeLogged extends Component {
     });
 
     socket.on('updateChat', (tab) => {
-      console.log('updateChat');
       this.setState({
         messages: tab,
       });
@@ -87,13 +85,13 @@ class HomeLogged extends Component {
         msgFrom_name: message.msgFrom_name,
         date: formattedTime,
       };
-      console.log(newMsg);
+
       let tab = this.state.messages;
       tab.push(newMsg);
       this.setState({
         messages: tab,
       });
-      console.log(tab.length);
+
       if (tab.length <= 1) return;
       this.goToElement(tab.length);
     });

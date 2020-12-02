@@ -10,6 +10,7 @@ class Members extends Component {
     this.Auth = new AuthService();
     this.state = {
       id: this.Auth.getConfirm()['id'],
+      winSize: '',
     };
   }
 
@@ -35,6 +36,10 @@ class Members extends Component {
         </ul>
       </ul>
     );
+  }
+  componentDidMount() {
+    this._isMounted = true;
+    this._isMounted && this.setState({ winSize: window.innerHeight - 160 });
   }
 }
 
