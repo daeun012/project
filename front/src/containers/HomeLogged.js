@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import '../styles/App.css';
+import 'materialize-css/dist/css/materialize.min.css';
 import { connect } from 'react-redux';
 import AuthService from '../services/AuthService';
 import io from 'socket.io-client';
@@ -6,7 +8,9 @@ import Members from '../components/Members';
 import Messages from '../components/Messages';
 import moment from 'moment';
 import * as actionCreators from '../actions/user-actions';
+
 var socket;
+
 class HomeLogged extends Component {
   constructor(props) {
     super(props);
@@ -33,7 +37,7 @@ class HomeLogged extends Component {
           </div>
         ) : (
           <div className="row left align" style={{ minWidth: 100 + '%' }}>
-            <div className="col s3" style={{ height: this.state.winSize }}>
+            <div className="col s3">
               <Members members={this.state.member} />
             </div>
             <div className="col s9">
@@ -98,8 +102,8 @@ class HomeLogged extends Component {
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
     socket.close();
+    this._isMounted = false;
   }
 
   handleMatch = () => {

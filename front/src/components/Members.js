@@ -21,7 +21,7 @@ class Members extends Component {
           <h5 style={{ textAlign: 'center' }} className="chat-conv-title-text">
             멤버
           </h5>
-          <i className="material-icons prefix pink-icon chat-conv-title-icon">mail</i>
+          <i className="material-icons prefix pink-icon chat-conv-title-icon">people</i>
         </li>
         <ul style={{ height: this.state.winSize, overflow: 'auto' }}>
           {this.props.members
@@ -29,7 +29,10 @@ class Members extends Component {
                 <li className="collection-item avatar clickable" key={e.grade}>
                   <Avatar className="chat-user-letters">{this.state.id === e.id ? '나' : e.grade}</Avatar>
                   <span className="title truncate chat-user-title">{e.grade}학년</span>
-                  <span className="title truncate chat-user-title">{e.name}</span>
+                  <span className="chat-user-name">{e.name}</span>
+                  <a href="#!" className="secondary-content">
+                    <span id={e.name ? 'green-circle' : 'grey-circle'} aria-label="Active Now" />
+                  </a>
                 </li>
               ))
             : 'member n exist'}

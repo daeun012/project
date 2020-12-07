@@ -29,6 +29,9 @@ main {
   color: white;
 }
 
+.nav {
+}
+
 nav ul a {
   font-size: 16px;
 }
@@ -80,7 +83,7 @@ nav {
   background-color: #ee6e73;
   width: 1000px;
   margin: auto;
-  margin-bottom: 20%;
+  margin-bottom: 2%;
 }
 
 .row {
@@ -899,11 +902,9 @@ button:focus {
 .message-link-profile {
   color: #ee6e73;
 }
-
 .chatbox-message {
   overflow: auto;
 }
-
 .chat-conv-title-text {
   color: #ee6e73;
 }
@@ -1657,7 +1658,7 @@ button.btn-star-picture-main {
   .chat-user-title {
     display: none !important;
   }
-  .chat-user-status {
+  .chat-user-name {
     display: none !important;
   }
 

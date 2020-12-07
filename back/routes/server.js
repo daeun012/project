@@ -88,14 +88,8 @@ io.on('connection', (socket) => {
     // 매칭 실행
     var room_id = await matchController.matchingRandom(msg.id, msg.grade, msg.dept);
 
-    console.log('room_id', room_id);
-
-    if (room_list[room_id]) {
-      room_list[room_id][msg.grade - 1] = { grade: msg.grade, id: msg.id, name: msg.name };
-    } else {
-      room_list[room_id] = [{ grade: 1 }, { grade: 2 }, { grade: 3 }, { grade: 4 }];
-      room_list[room_id][msg.grade - 1] = { grade: msg.grade, id: msg.id, name: msg.name };
-    }
+    var members = await matchController.getMembers(room_id);
+    room_list[room_id] = members;
 
     console.log(room_list[room_id]);
 
